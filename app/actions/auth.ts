@@ -1,9 +1,14 @@
+"use server";
+
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export async function createClient() {
+export async function signIn(formData: FormData) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
   const cookieStore = await cookies();
-  return createServerClient(
+  const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -14,11 +19,17 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             );
-          } catch {
-            // Called from Server Component — proxy handles token refresh
-          }
+          } catch { }
         },
       },
     }
   );
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { success: true };
 }

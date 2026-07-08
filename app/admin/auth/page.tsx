@@ -1,38 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { signIn } from "@/app/actions/auth";
 
 export default function AuthPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const supabase = createClient();
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const formData = new FormData(e.currentTarget);
+      const result = await signIn(formData);
 
-      if (error) {
-        setError(error.message);
+      if (result?.error) {
+        setError(result.error);
         setLoading(false);
         return;
       }
 
-      router.refresh();
-      router.push("/admin");
+      window.location.href = "/admin";
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+      setError(err instanceof Error ? err.message : "Sign in failed");
       setLoading(false);
     }
   }
@@ -45,17 +37,15 @@ export default function AuthPage() {
         <form onSubmit={handleSubmit} style={styles.form}>
           <input
             type="email"
+            name="email"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             required
             style={styles.input}
           />
           <input
             type="password"
+            name="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             required
             style={styles.input}
           />
