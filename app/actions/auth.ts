@@ -2,8 +2,9 @@
 
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export async function signIn(formData: FormData) {
+export async function signIn(_prevState: unknown, formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
@@ -31,5 +32,5 @@ export async function signIn(formData: FormData) {
     return { error: error.message };
   }
 
-  return { success: true };
+  redirect("/admin");
 }

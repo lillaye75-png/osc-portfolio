@@ -2,11 +2,11 @@ import Link from "next/link";
 import { Phone, Mail, MapPin, ArrowRight } from "lucide-react";
 
 const servicesLinks = [
-  { label: "Conception 2D/3D", href: "/services/conception" },
-  { label: "Études Structurelles", href: "/services/etudes-structurelles" },
-  { label: "Estimation & Devis", href: "/services/estimation" },
-  { label: "Supervision de Chantier", href: "/services/supervision" },
-  { label: "Rénovation", href: "/services/renovation" },
+  { label: "Conception 2D/3D", href: "/services/architectural-design" },
+  { label: "Visualisation 3D", href: "/services/3d-visualization" },
+  { label: "Études Structurelles", href: "/services/structural-engineering" },
+  { label: "Estimation & Devis", href: "/services/cost-estimation" },
+  { label: "Gestion de Projet", href: "/services/project-management" },
 ];
 
 const realisationsLinks = [

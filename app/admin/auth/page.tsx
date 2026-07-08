@@ -1,40 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import { signIn } from "@/app/actions/auth";
 
 export default function AuthPage() {
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const formData = new FormData(e.currentTarget);
-      const result = await signIn(formData);
-
-      if (result?.error) {
-        setError(result.error);
-        setLoading(false);
-        return;
-      }
-
-      window.location.href = "/admin";
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign in failed");
-      setLoading(false);
-    }
-  }
+  const [state, formAction, pending] = useActionState(signIn, null);
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <h1 style={styles.title}>OSC Admin</h1>
         <p style={styles.subtitle}>Sign in to manage your portfolio</p>
-        <form onSubmit={handleSubmit} style={styles.form}>
+        <form action={formAction} style={styles.form}>
           <input
             type="email"
             name="email"
@@ -49,9 +26,9 @@ export default function AuthPage() {
             required
             style={styles.input}
           />
-          {error && <p style={styles.error}>{error}</p>}
-          <button type="submit" disabled={loading} style={styles.button}>
-            {loading ? "Signing in..." : "Sign In"}
+          {state?.error && <p style={styles.error}>{state.error}</p>}
+          <button type="submit" disabled={pending} style={styles.button}>
+            {pending ? "Signing in..." : "Sign In"}
           </button>
         </form>
       </div>
