@@ -4,6 +4,7 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = { title: "Admin — OSC" };
+export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
